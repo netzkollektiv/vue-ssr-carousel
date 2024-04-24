@@ -1390,7 +1390,12 @@ notPassive = {
     },
     // Keep track of whether user is dragging
     onPointerDown: function (pointerEvent) {
-      this.isTouchDrag = typeof TouchEvent !== "undefined" && TouchEvent !== null && pointerEvent instanceof TouchEvent;
+      this.isTouchDrag = typeof TouchEvent !== "undefined" && TouchEvent !== null && pointerEvent instanceof TouchEvent; // do not handle multi-gestures
+
+      if (this.isTouchDrag && pointerEvent.touches.length === 2) {
+        return;
+      }
+
       this.startPointer = this.lastPointer = this.getPointerCoords(pointerEvent);
       this.pressing = true;
       return this.usingKeyboard = false;
@@ -1401,7 +1406,11 @@ notPassive = {
     },
     // Keep x values up to date while dragging
     onPointerMove: function (pointerEvent) {
-      var pointer;
+      var pointer; // do not handle multi-gestures
+
+      if (this.isTouchDrag && pointerEvent.touches.length === 2) {
+        return;
+      }
 
       if (!this.dragging) {
         // Mark the carousel as dragging, which is used to disable clicks

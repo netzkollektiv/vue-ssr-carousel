@@ -192,6 +192,11 @@ export default
 		# Keep track of whether user is dragging
 		onPointerDown: (pointerEvent) ->
 			@isTouchDrag = TouchEvent? and pointerEvent instanceof TouchEvent
+
+			# do not handle multi-gestures
+			if @isTouchDrag && pointerEvent.touches.length == 2
+				return
+
 			@startPointer = @lastPointer = @getPointerCoords pointerEvent
 			@pressing = true
 			@usingKeyboard = false
@@ -201,6 +206,10 @@ export default
 
 		# Keep x values up to date while dragging
 		onPointerMove: (pointerEvent) ->
+
+			# do not handle multi-gestures
+			if @isTouchDrag && pointerEvent.touches.length == 2
+				return
 
 			# Mark the carousel as dragging, which is used to disable clicks
 			@dragging = true unless @dragging
